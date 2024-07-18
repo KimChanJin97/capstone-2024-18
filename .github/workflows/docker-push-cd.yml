@@ -46,7 +46,7 @@ jobs:
         uses: appleboy/ssh-action@master
         id: deploy-prod
         env:
-          COMPOSE: "/home/app/compose/docker-compose.yml"
+          COMPOSE: "~/app/compose/docker-compose.yml"
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USERNAME }}
