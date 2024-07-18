@@ -13,7 +13,7 @@ RUN ./gradlew clean bootJar --parallel --no-daemon
 FROM bellsoft/liberica-openjdk-debian:21
 
 ARG JAR_FILE=workspace/build/libs/facefriend-0.0.1-SNAPSHOT.jar
-COPY ${JAR_FILE} facefriend-0.0.1-SNAPSHOT.jar
+COPY --from=builder $JAR_FILE facefriend-0.0.1-SNAPSHOT.jar
 
 ENTRYPOINT ["java", \
             "-Xms1400m", \
