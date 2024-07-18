@@ -43,7 +43,7 @@ jobs:
         working-directory: ${{ env.working-directory }}
 
       - name: Deploy to Prod
-        uses: appleboy/ssh-action@v1.0.0
+        uses: appleboy/ssh-action@master
         id: deploy-prod
         with:
           host: ${{ secrets.EC2_HOST }}
