@@ -67,14 +67,15 @@ jobs:
           port: 22
           envs: GITHUB_SHA
           script: |
+             docker network create facefriend-network || true
              docker stop facefriend || true
              docker stop facefriend-redis || true
              docker rm facefriend || true
              docker rm facefriend-redis || true
              docker pull ${{ secrets.DOCKER_REPO }}/facefriend
              docker pull ${{ secrets.DOCKER_REPO }}/facefriend-redis
-             docker run -d --name facefriend -p 8080:8080 ${{ secrets.DOCKER_REPO }}/facefriend
-             docker run -d --name facefriend-redis -p 6379:6379 ${{ secrets.DOCKER_REPO }}/facefriend-redis
+             docker run -d --name facefriend --network facefriend-network -p 8080:8080 ${{ secrets.DOCKER_REPO }}/facefriend
+             docker run -d --name facefriend-redis --network facefriend-network -p 6379:6379 ${{ secrets.DOCKER_REPO }}/facefriend-redis
              dangling_images=$(docker images -f "dangling=true" -q)
              if [ -n "$dangling_images" ]; then
                docker rmi -f $dangling_images
