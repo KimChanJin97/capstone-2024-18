@@ -30,11 +30,11 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-gradle-
 
-    - name: Make application-prod.properties
+    - name: Make application-prod.yml
       run: |
         cd ${{ env.working-directory }}/src/main/resources
-        touch ./application-prod.properties
-        echo "${{ secrets.PROPERTIES_PROD }}" > ./application-prod.properties
+        touch ./application-prod.yml
+        echo "${{ secrets.PROPERTIES_PROD }}" > ./application-prod.yml
       shell: bash
     
     - name: Grant Execute Permission For Gradlew
