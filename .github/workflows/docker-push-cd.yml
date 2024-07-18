@@ -75,4 +75,7 @@ jobs:
              docker pull ${{ secrets.DOCKER_REPO }}/facefriend-redis
              docker run -d --name facefriend -p 8080:8080 ${{ secrets.DOCKER_REPO }}/facefriend
              docker run -d --name facefriend-redis -p 6379:6379 ${{ secrets.DOCKER_REPO }}/facefriend-redis
-             docker rmi -f $(docker images -f "dangling=true" -q)
+             dangling_images=$(docker images -f "dangling=true" -q)
+             if [ -n "$dangling_images" ]; then
+               docker rmi -f $dangling_images
+             fi
