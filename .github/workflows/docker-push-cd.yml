@@ -3,7 +3,7 @@ name: CD
 on:
   push: #해당 브랜치에 push(merge) 했을 때
     branches:
-      - main
+      - master
 
 permissions: write-all #테스트 결과 작성을 위해 쓰기권한 추가
 
