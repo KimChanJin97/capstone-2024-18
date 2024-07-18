@@ -9,6 +9,8 @@ permissions: write-all
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      working-directory: ./back
     steps:
     - uses: actions/checkout@v3
     
@@ -30,9 +32,11 @@ jobs:
 
     - name: Grant Execute Permission For Gradlew
       run: chmod +x gradlew
+      working-directory: ${{ env.working-directory }}
       
     - name: Build With Gradle
       run: ./gradlew build -x test
+      working-directory: ${{ env.working-directory }}
       
     - name: Start MySQL
       uses: samin/mysql-action@v1.3
