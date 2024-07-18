@@ -46,6 +46,7 @@ jobs:
         run: |
           docker login -u ${{ secrets.DOCKER_ID }} -p ${{ secrets.DOCKER_PASSWORD }}
           docker build -f Dockerfile -t ${{ secrets.DOCKER_REPO }}/facefriend .
+          docker build -f Dockerfile-redis -t ${{ secrets.DOCKER_REPO }}/facefriend .
           docker push ${{ secrets.DOCKER_REPO }}/facefriend
         working-directory: ${{ env.working-directory }}
 
