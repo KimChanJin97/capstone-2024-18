@@ -32,11 +32,10 @@ jobs:
 
     - name: Make application-prod.properties
       run: |
-        cd ./src/main/resources
+        cd ${{ env.working-directory }}/src/main/resources
         touch ./application-prod.properties
         echo "${{ secrets.PROPERTIES_PROD }}" > ./application-prod.properties
       shell: bash
-      working-directory: ${{ env.working-directory }}
     
     - name: Grant Execute Permission For Gradlew
       run: chmod +x gradlew
