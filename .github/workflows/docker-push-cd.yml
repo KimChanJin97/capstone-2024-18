@@ -53,8 +53,9 @@ jobs:
           key: ${{ secrets.EC2_PRIVATE_KEY }}
           port: 22
           envs: GITHUB_SHA
-          script_stop: true
           script: |
-             sudo docker-compose -f $COMPOSE down
+             docker stop facefriend
+             docker rm facefriend
              sudo docker pull ${{ secrets.DOCKER_REPO }}/facefriend
-             sudo docker-compose -f $COMPOSE up -d
+             docker run -d --name facefriend -p 8080:8080 ${{ secrets.DOCKER_REPO }}/facefriend
+             docker rmi -f $(docker images -f "dangling=true" -q)
