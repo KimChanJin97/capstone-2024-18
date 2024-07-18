@@ -45,6 +45,8 @@ jobs:
       - name: Deploy to Prod
         uses: appleboy/ssh-action@master
         id: deploy-prod
+        env:
+          COMPOSE: "/home/app/compose/docker-compose.yml"
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USERNAME }}
@@ -52,8 +54,6 @@ jobs:
           port: 22
           envs: GITHUB_SHA
           script: |
-             docker stop facefriend
-             docker rm facefriend
+             sudo docker-compose -f $COMPOSE down
              sudo docker pull ${{ secrets.DOCKER_REPO }}/facefriend
-             docker run -d --name facefriend -p 8080:8080 ${{ secrets.DOCKER_REPO }}/facefriend
-             docker rmi -f $(docker images -f "dangling=true" -q)
+             sudo docker-compose -f $COMPOSE up -d
