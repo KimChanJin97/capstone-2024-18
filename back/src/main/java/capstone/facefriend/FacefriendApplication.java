@@ -13,6 +13,4 @@ public class FacefriendApplication {
         TimeZone.setDefault(TimeZone.getTimeZone("Asia/Seoul"));
         SpringApplication.run(FacefriendApplication.class, args);
     }
-
-    // ci test
 }
