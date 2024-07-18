@@ -30,6 +30,13 @@ jobs:
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
           restore-keys: |
             ${{ runner.os }}-gradle-
+
+      - name: Make application-prod.yml
+        run: |
+          cd ${{ env.working-directory }}/src/main/resources
+          touch ./application-prod.yml
+          echo "${{ secrets.PROPERTIES_PROD }}" > ./application-prod.yml
+        shell: bash      
       
       - name: Build With Gradle
         run: ./gradlew build -x test
