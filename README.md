@@ -71,7 +71,7 @@
             <td align='center'>아키텍처</td>
           </tr>
           <tr>
-            <td align='center'><img src="images/be-preview1.png"></td>
+            <td align='center'><img src="images/be-preview0.png"></td>
           </tr>
           <tr>
             <td align='center'>관상 이미지 생성 로직</td>
