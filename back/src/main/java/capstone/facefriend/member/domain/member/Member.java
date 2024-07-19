@@ -53,7 +53,7 @@ public class Member extends BaseEntity {
     @JoinColumn(name = "FACE_INFO_ID", nullable = false)
     private FaceInfo faceInfo;
 
-    @OneToOne(fetch = FetchType.EAGER)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ANALYSIS_INFO_ID", nullable = false)
     private AnalysisInfo analysisInfo;
 

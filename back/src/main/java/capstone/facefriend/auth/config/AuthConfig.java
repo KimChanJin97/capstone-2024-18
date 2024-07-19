@@ -50,7 +50,6 @@ public class AuthConfig implements WebMvcConfigurer {
         return new PathMatchInterceptor(loginCheckInterceptor)
                 .addExcludePathPattern("/**", OPTIONS)
 
-                .addIncludePathPattern("/member/**", ANY)
                 .addIncludePathPattern("/basic-info", ANY)
                 .addIncludePathPattern("/face-info", ANY)
                 .addIncludePathPattern("/analysis-info/**", ANY)
@@ -67,7 +66,6 @@ public class AuthConfig implements WebMvcConfigurer {
         return new PathMatchInterceptor(loginInterceptor)
                 .addExcludePathPattern("/**", OPTIONS)
 
-                .addIncludePathPattern("/member/**", ANY)
                 .addIncludePathPattern("/basic-info", ANY)
                 .addIncludePathPattern("/face-info", ANY)
                 .addIncludePathPattern("/analysis-info/**", ANY)
@@ -91,7 +89,6 @@ public class AuthConfig implements WebMvcConfigurer {
         return new PathMatchInterceptor(tokenBlackListInterceptor)
                 .addExcludePathPattern("/**", OPTIONS)
 
-                .addIncludePathPattern("/member/**", ANY)
                 .addIncludePathPattern("/basic-info", ANY)
                 .addIncludePathPattern("/face-info", ANY)
                 .addIncludePathPattern("/analysis-info/**", ANY)
