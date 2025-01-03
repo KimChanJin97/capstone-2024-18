@@ -1,16 +1,16 @@
 package capstone.facefriend.resume.repository;
 
+import static capstone.facefriend.member.domain.analysisInfo.QAnalysisInfo.*;
+import static capstone.facefriend.member.domain.faceInfo.QFaceInfo.faceInfo;
+import static capstone.facefriend.member.domain.member.QMember.member;
 import static capstone.facefriend.member.exception.member.MemberExceptionType.NOT_FOUND;
 import static capstone.facefriend.resume.domain.QResume.resume;
 
+import capstone.facefriend.member.domain.analysisInfo.QAnalysisInfo;
 import capstone.facefriend.member.domain.member.Member;
-
-import capstone.facefriend.member.domain.member.QMember;
 import capstone.facefriend.member.exception.member.MemberException;
 import capstone.facefriend.member.repository.MemberRepository;
 import capstone.facefriend.resume.domain.Resume;
-
-
 import capstone.facefriend.resume.dto.QResumePreviewResponse;
 import capstone.facefriend.resume.dto.ResumePreviewResponse;
 import com.querydsl.core.BooleanBuilder;
@@ -37,47 +37,50 @@ public class ResumeRepositoryImpl implements ResumeRepositoryCustom {
 
     public Page<ResumePreviewResponse> getResumesByGoodCombi(Long memberId, Pageable pageable) {
         Member me = findMemberById(memberId);
-        Integer faceShapeIdNum = me.getAnalysisInfo().getFaceShapeIdNum();
+        Integer faceShapeId = me.getAnalysisInfo().getFaceShapeIdNum();
 
-        BooleanBuilder builder = new BooleanBuilder();
-        switch (faceShapeIdNum) {
+        BooleanBuilder hasGoodCombi = new BooleanBuilder();
+        switch (faceShapeId) {
             case 0: // 화
-                builder.and(resume.member.analysisInfo.faceShapeIdNum.in(GOOD_COMBI_IN_CASE_0));
+                hasGoodCombi.and(analysisInfo.faceShapeIdNum.in(GOOD_COMBI_IN_CASE_0));
                 break;
             case 1: // 수
-                builder.and(resume.member.analysisInfo.faceShapeIdNum.in(GOOD_COMBI_IN_CASE_1));
+                hasGoodCombi.and(analysisInfo.faceShapeIdNum.in(GOOD_COMBI_IN_CASE_1));
                 break;
             case 2: // 목
-                builder.and(resume.member.analysisInfo.faceShapeIdNum.in(GOOD_COMBI_IN_CASE_2));
+                hasGoodCombi.and(analysisInfo.faceShapeIdNum.in(GOOD_COMBI_IN_CASE_2));
                 break;
             case 3: // 금
-                builder.and(resume.member.analysisInfo.faceShapeIdNum.in(GOOD_COMBI_IN_CASE_3));
+                hasGoodCombi.and(analysisInfo.faceShapeIdNum.in(GOOD_COMBI_IN_CASE_3));
                 break;
             case 4: // 토
-                builder.and(resume.member.analysisInfo.faceShapeIdNum.in(GOOD_COMBI_IN_CASE_4));
+                hasGoodCombi.and(analysisInfo.faceShapeIdNum.in(GOOD_COMBI_IN_CASE_4));
                 break;
         }
 
         List<ResumePreviewResponse> content = queryFactory
                 .select(new QResumePreviewResponse(
                         resume.id,
-                        resume.member.faceInfo.generatedS3url))
+                        faceInfo.generatedS3url))
                 .from(resume)
-                .innerJoin(resume.member, QMember.member)
-                .where(builder)
+                .innerJoin(resume.member, member)
+                .innerJoin(member.faceInfo, faceInfo)
+                .innerJoin(member.analysisInfo, analysisInfo)
+                .where(hasGoodCombi)
                 .where(resume.member.ne(me))
                 .orderBy(resume.id.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
 
-        int total = queryFactory
-                .select(resume)
+        long total = queryFactory
+                .select(resume.count())
                 .from(resume)
-                .join(resume.member).fetchJoin()
-                .where(builder)
-                .fetch()
-                .size();
+                .innerJoin(resume.member, member)
+                .innerJoin(member.analysisInfo, analysisInfo)
+                .where(hasGoodCombi)
+                .where(resume.member.ne(me))
+                .fetchOne();
 
         return new PageImpl<>(content, pageable, total);
     }
@@ -88,9 +91,10 @@ public class ResumeRepositoryImpl implements ResumeRepositoryCustom {
         List<ResumePreviewResponse> content = queryFactory
                 .select(new QResumePreviewResponse(
                         resume.id,
-                        resume.member.faceInfo.generatedS3url))
+                        faceInfo.generatedS3url))
                 .from(resume)
-                .innerJoin(resume.member, QMember.member)
+                .innerJoin(resume.member, member)
+                .innerJoin(member.faceInfo, faceInfo)
                 .where(resume.categories.contains(Resume.Category.valueOf(category)))
                 .where(resume.member.ne(me))
                 .orderBy(resume.id.desc())
@@ -98,14 +102,13 @@ public class ResumeRepositoryImpl implements ResumeRepositoryCustom {
                 .limit(pageable.getPageSize())
                 .fetch();
 
-        int total = queryFactory
-                .select(resume)
+        long total = queryFactory
+                .select(resume.count())
                 .from(resume)
-                .join(resume.member).fetchJoin()
-                .join(resume.categories).fetchJoin()
+                .innerJoin(resume.member)
+                .innerJoin(resume.categories)
                 .where(resume.categories.contains(Resume.Category.valueOf(category)))
-                .fetch()
-                .size();
+                .fetchOne();
 
         return new PageImpl<>(content, pageable, total);
     }
